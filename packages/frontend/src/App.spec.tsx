@@ -5,27 +5,39 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-import { render } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
-
-// The welcome view polls a dev-only activity endpoint via `useSourceActivity`.
-// In this smoke test there is no dev server, so stub the hook to return no feed:
-// the view renders its illustrative state synchronously and nothing settles after
-// the test (which would otherwise log a React `act(...)` warning).
-vi.mock('./Welcome.activity', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('./Welcome.activity')>();
-  return { ...actual, useSourceActivity: () => null };
-});
+import { fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
 
 import App from '@/App';
 
 describe('App', () => {
-  it('renders without throwing', () => {
-    expect(() => render(<App />)).not.toThrow();
+  beforeEach(() => {
+    vi.stubGlobal('matchMedia', () => ({
+      matches: false,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    }));
+  });
+  afterEach(() => vi.unstubAllGlobals());
+
+  it('combines store and minimum discount filters and restores all deals', () => {
+    render(<App />);
+    expect(screen.getAllByRole('article')).toHaveLength(6);
+    fireEvent.change(screen.getByLabelText('Store'), { target: { value: 'Oops! Outlet' } });
+    expect(screen.getAllByRole('article')).toHaveLength(2);
+    fireEvent.change(screen.getByLabelText('Minimum advertised discount'), { target: { value: '50' } });
+    expect(screen.getAllByRole('article')).toHaveLength(1);
+    expect(screen.getByRole('heading', { name: 'Sock GPS Mini' })).toBeVisible();
+    fireEvent.change(screen.getByLabelText('Minimum advertised discount'), { target: { value: '80' } });
+    expect(screen.getByText('No deals in this aisle')).toBeVisible();
+    fireEvent.click(screen.getByRole('button', { name: 'Reset filters' }));
+    expect(screen.getAllByRole('article')).toHaveLength(6);
   });
 
-  it('mounts content into the document', () => {
+  it('lets a shopper play and replay a gadget demo', () => {
     render(<App />);
-    expect(document.body).not.toBeEmptyDOMElement();
+    fireEvent.click(screen.getByRole('button', { name: 'Play Wi-Fry Toaster demo' }));
+    expect(screen.getByRole('button', { name: 'Replay Wi-Fry Toaster demo' })).toBeVisible();
+    expect(screen.getByText(/Toast detected/)).toBeInTheDocument();
   });
 });

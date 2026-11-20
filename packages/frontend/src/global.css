@@ -8,42 +8,69 @@
    `useCssTheme()` and project them into a JS theme object (Vega's SVG output
    cannot resolve `var()` references). */
 @theme static {
-  --color-brand: #0f6cbd; /* bar/area fills, button-like brand surfaces */
-  --color-brand-foreground: #0f6cbd; /* line/point marks, branded text & emphasis */
-  --color-hover: #f5f5f5; /* row/cell hover surface in DataGrid + visuals */
+  --color-brand: #6136db;
+  --color-brand-foreground: #6136db;
+  --color-hover: #f2ecff;
+  --color-foreground-secondary: #625973;
 }
 
 @theme {
   /* Color tokens — light theme
      Usage: bg-*, text-*, border-* (e.g. bg-primary text-primary-foreground)
      Each token has a -foreground pair for text on that surface. */
-  --color-background: #ffffff; /* page background */
-  --color-foreground: #242424; /* default text */
+  --color-background: #fbf8f2;
+  --color-foreground: #211532;
 
   --color-card: #ffffff; /* card surfaces */
-  --color-card-foreground: #242424;
+  --color-card-foreground: #211532;
 
   --color-popover: #ffffff; /* popover/dropdown surfaces */
   --color-popover-foreground: #242424;
 
-  --color-primary: #0f6cbd; /* primary actions & buttons */
+  --color-primary: #6136db;
   --color-primary-foreground: #ffffff;
 
-  --color-secondary: #fafafa; /* secondary actions */
-  --color-secondary-foreground: #242424;
+  --color-secondary: #f2ecff;
+  --color-secondary-foreground: #45279b;
 
-  --color-muted: #f0f0f0; /* subtle backgrounds */
-  --color-muted-foreground: #616161; /* subdued text */
+  --color-muted: #f1ede7;
+  --color-muted-foreground: #625973;
 
-  --color-accent: #f5f5f5; /* accent highlights */
-  --color-accent-foreground: #242424;
+  --color-accent: #ffda54;
+  --color-accent-foreground: #281745;
 
   --color-destructive: #c50f1f; /* errors & destructive actions */
   --color-destructive-foreground: #ffffff;
 
-  --color-border: #e0e0e0; /* default border */
-  --color-input: #e0e0e0; /* input field borders */
-  --color-ring: #0f6cbd; /* focus rings */
+  --color-border: #e9e1d8;
+  --color-input: #ddd4cc;
+  --color-ring: #6136db;
+  --color-hero: #4a2bb5;
+  --color-hero-foreground: #fffaf1;
+  --color-hero-muted: #eee3ff;
+  --color-lavender: #eee6ff;
+  --color-peach: #ffe8de;
+  --color-mint: #e0f6eb;
+  --color-lemon: #fff0bf;
+  --color-sky: #e3efff;
+  --color-pink: #fce5f2;
+  --color-deal: #c13767;
+  --color-success: #17704d;
+  --color-success-soft: #e1f6eb;
+  --color-art-ink: #29184c;
+  --color-art-paper: #fffaf1;
+  --color-art-violet: #9f78ff;
+  --color-art-deep: #7049e3;
+  --color-art-blue: #83b9fc;
+  --color-art-green: #78d5a5;
+  --color-art-rose: #fe91ad;
+  --color-art-orange: #ffad79;
+  --container-storefront: 76rem;
+  --spacing-1000: 40px;
+  --spacing-1200: 48px;
+  --spacing-1400: 56px;
+  --spacing-1600: 64px;
+  --spacing-chart: 245px;
 
   --radius-none: 0;
   --radius-sm: 2px;
@@ -56,7 +83,7 @@
   --radius-5xl: 32px;
   --radius-6xl: 40px;
   --radius-full: 9999px;
-  --radius: 6px;
+  --radius: 14px;
 
   /* Spacing — 4px grid; use only these tokens, no interpolation. *-nudge = base − 2px.
      Usage: p-*, m-*, gap-* (e.g. p-400 gap-300) */
@@ -108,20 +135,10 @@
 
   /* Font Families
      Usage: font-* (e.g. font-heading, font-base) */
-  --font-heading:
-    'Segoe UI', 'Segoe UI Web (West European)',
-    /* headings, titles, display text */ -apple-system, BlinkMacSystemFont,
-    Roboto, 'Helvetica Neue', sans-serif;
-  --font-base:
-    'Segoe UI', 'Segoe UI Web (West European)',
-    /* body text, labels, UI controls */ -apple-system, BlinkMacSystemFont,
-    Roboto, 'Helvetica Neue', sans-serif;
-  --font-monospace:
-    Consolas, 'Courier New', Courier, monospace; /* code, pre-formatted text */
-  --font-numeric:
-    Bahnschrift, 'Segoe UI',
-    /* KPI values, numeric displays */ 'Segoe UI Web (West European)',
-    -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
+  --font-heading: 'Space Grotesk', 'Trebuchet MS', sans-serif;
+  --font-base: 'Space Grotesk', 'Trebuchet MS', sans-serif;
+  --font-monospace: 'Space Mono', Consolas, monospace;
+  --font-numeric: 'Space Mono', Consolas, monospace;
 
   /* Icon Sizes — 100-based scale
      Usage: icon-size-* custom utility (e.g. icon-size-200) */
@@ -142,37 +159,38 @@
 @layer base {
   .dark {
     /* Color tokens — dark theme */
-    --color-background: #292929;
-    --color-foreground: #ffffff;
+    --color-background: #1b1427;
+    --color-foreground: #fcf4ff;
 
-    --color-card: #292929;
-    --color-card-foreground: #ffffff;
+    --color-card: #261d35;
+    --color-card-foreground: #fcf4ff;
 
-    --color-popover: #292929;
+    --color-popover: #261d35;
     --color-popover-foreground: #ffffff;
 
-    --color-primary: #115ea3;
-    --color-primary-foreground: #ffffff;
+    --color-primary: #c3a9ff;
+    --color-primary-foreground: #231438;
 
-    --color-secondary: #1f1f1f;
-    --color-secondary-foreground: #ffffff;
+    --color-secondary: #3a2854;
+    --color-secondary-foreground: #e6d9ff;
 
-    --color-muted: #141414;
-    --color-muted-foreground: #adadad;
-
-    --color-accent: #3d3d3d;
-    --color-accent-foreground: #ffffff;
+    --color-muted: #2e233e;
+    --color-muted-foreground: #c9bdd6;
 
     --color-destructive: #c50f1f;
     --color-destructive-foreground: #ffffff;
 
-    --color-border: #525252;
-    --color-input: #525252;
-    --color-ring: #479ef5;
+    --color-border: #483957;
+    --color-input: #534263;
+    --color-ring: #c3a9ff;
 
-    --color-brand: #115ea3;
-    --color-brand-foreground: #479ef5;
-    --color-hover: #3d3d3d;
+    --color-brand: #ab8afa;
+    --color-brand-foreground: #c3a9ff;
+    --color-hover: #3a2854;
+    --color-foreground-secondary: #c9bdd6;
+    --color-deal: #ffa8c6;
+    --color-success: #a4ebc8;
+    --color-success-soft: #233c34;
   }
 }
 
@@ -182,12 +200,41 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background font-base text-foreground antialiased;
   }
+
+  button, select, input, textarea { font-family: inherit; }
+  :focus-visible { outline: 2px solid var(--color-ring); outline-offset: 3px; }
 }
 
 html,
 body,
 #root {
   height: 100%;
+}
+
+@utility hero-pattern {
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--color-hero-foreground) 24%, transparent) 1px, transparent 1px);
+  background-size: 19px 19px;
+}
+
+@utility art-pattern {
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--color-art-ink) 15%, transparent) 1px, transparent 1px);
+  background-size: 15px 15px;
+}
+
+@keyframes gadget-demo {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  35% { transform: translateY(-9px) rotate(-5deg); }
+  70% { transform: translateY(-3px) rotate(4deg); }
+}
+@keyframes gadget-effect {
+  0%, 100% { opacity: .8; transform: translateY(0) scale(1); }
+  50% { opacity: .3; transform: translateY(-12px) scale(1.13); }
+}
+.art-playing .gadget-body, .art-playing .gadget-effect { transform-box: fill-box; transform-origin: center; }
+.art-playing .gadget-body { animation: gadget-demo 1.15s ease-in-out 2; }
+.art-playing .gadget-effect { animation: gadget-effect 1.15s ease-in-out 2; }
+@media (prefers-reduced-motion: reduce) {
+  .art-playing .gadget-body, .art-playing .gadget-effect { animation: none; }
 }
