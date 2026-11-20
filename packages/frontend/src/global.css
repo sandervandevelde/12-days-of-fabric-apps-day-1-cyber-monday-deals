@@ -223,18 +223,30 @@ body,
   background-size: 15px 15px;
 }
 
-@keyframes gadget-demo {
-  0%, 100% { transform: translateY(0) rotate(0); }
-  35% { transform: translateY(-9px) rotate(-5deg); }
-  70% { transform: translateY(-3px) rotate(4deg); }
+@keyframes film-cut {
+  from { opacity: .35; transform: translate(10px, 3px); }
+  to { opacity: 1; transform: translate(0, 0); }
 }
-@keyframes gadget-effect {
-  0%, 100% { opacity: .8; transform: translateY(0) scale(1); }
-  50% { opacity: .3; transform: translateY(-12px) scale(1.13); }
+@keyframes film-action {
+  0%, 100% { transform: translateY(0); }
+  35% { transform: translateY(-12px) rotate(-7deg); }
+  70% { transform: translateY(-4px) rotate(5deg); }
 }
-.art-playing .gadget-body, .art-playing .gadget-effect { transform-box: fill-box; transform-origin: center; }
-.art-playing .gadget-body { animation: gadget-demo 1.15s ease-in-out 2; }
-.art-playing .gadget-effect { animation: gadget-effect 1.15s ease-in-out 2; }
-@media (prefers-reduced-motion: reduce) {
-  .art-playing .gadget-body, .art-playing .gadget-effect { animation: none; }
+@keyframes film-reaction {
+  from { transform: scale(.85); opacity: .5; }
+  to { transform: scale(1); opacity: 1; }
+}
+.product-shot[data-scene="0"] .product-camera { transform: translate(-39px, 3px); }
+.product-shot[data-scene="1"] .product-camera { transform: translate(-70px, -10px) scale(1.18); }
+.product-shot[data-scene="2"] .product-camera { transform: translate(-33px, 10px) scale(.93); }
+@media (prefers-reduced-motion: no-preference) {
+  .product-shot .product-cutaway { animation: film-cut .38s ease-out both; }
+  .product-shot[data-scene="1"] .gadget-effect,
+  .product-shot[data-scene="2"] .gadget-body {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .product-shot[data-scene="1"] .gadget-effect { animation: film-action 1.25s ease-in-out 2; }
+  .product-shot[data-scene="2"] .gadget-body { animation: film-reaction .55s ease-out; }
+  .product-shot[data-playing="false"] :is(.product-cutaway, .gadget-effect, .gadget-body) { animation-play-state: paused; }
 }

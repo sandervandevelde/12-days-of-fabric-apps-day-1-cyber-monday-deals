@@ -21,7 +21,7 @@ const compareSpec: VisualizationSpec = {
   height: 'container',
   mark: { type: 'bar', cornerRadiusEnd: 5, size: 23 },
   encoding: {
-    y: { field: 'Stage', type: 'nominal', title: null, sort: ['Usual', 'Marked up', 'Now'] },
+    y: { field: 'Stage', type: 'nominal', title: null, sort: ['Usual', 'Pre-sale', 'Now'] },
     x: { field: 'Price', type: 'quantitative', title: null, axis: { format: '$.0f', tickCount: 4 } },
     tooltip: [{ field: 'Stage', type: 'nominal' }, { field: 'Price', type: 'quantitative', format: '$.2f' }],
   },
@@ -50,7 +50,7 @@ export default function DealDetail({ deal, onClose }: { deal: LiveDeal; onClose:
     ],
   }), [price, regular, inflated, opening]);
   const comparison = useMemo<DataTable>(() => ({
-    columns, rows: [['Usual', regular], ['Marked up', inflated], ['Now', price]],
+    columns, rows: [['Usual', regular], ['Pre-sale', inflated], ['Now', price]],
   }), [price, regular, inflated]);
 
   return (
@@ -64,7 +64,7 @@ export default function DealDetail({ deal, onClose }: { deal: LiveDeal; onClose:
       <div>
         <header className="sticky top-0 z-10 flex items-start justify-between gap-400 border-b border-border bg-card px-500 py-400 sm:px-800">
           <div>
-            <p className="mb-100 font-monospace text-200 font-bold tracking-wider text-primary uppercase">Deal detective · {deal.store}</p>
+            <p className="mb-100 font-monospace text-200 font-bold tracking-wider text-primary uppercase">{deal.store} · {deal.category}</p>
             <h2 id="deal-title" className="text-hero-700 leading-tight font-bold">{deal.name}</h2>
           </div>
           <button type="button" aria-label="Close deal details" onClick={onClose} className="cursor-pointer rounded-full border bg-background p-200 hover:bg-secondary"><X className="icon-size-300" /></button>
@@ -79,21 +79,18 @@ export default function DealDetail({ deal, onClose }: { deal: LiveDeal; onClose:
             </div>
           </div>
           <section aria-labelledby="price-history">
-            <h3 id="price-history" className="mb-200 flex items-center gap-200 text-600 font-bold"><ChartNoAxesCombined className="icon-size-400 text-primary" /> The price trick</h3>
-            <p className="mb-400 rounded-2xl bg-accent px-400 py-300 text-300 text-accent-foreground">
-              <strong>Still {usd(price - regular)} above the usual price.</strong> The store raised the price from {usd(regular)} to {usd(inflated)} just before the sale. That’s where the flashy {deal.discount}% comes from.
-            </p>
+            <h3 id="price-history" className="mb-300 flex items-center gap-200 text-600 font-bold"><ChartNoAxesCombined className="icon-size-400 text-primary" /> Pricing</h3>
             <div className="grid gap-400 sm:grid-cols-2 sm:auto-rows-chart">
               <div className="h-chart min-w-0">
                 <VegaVisual spec={historySpec} data={history} theme={theme} header={{ title: 'Price history' }} />
               </div>
               <div className="h-chart min-w-0">
-                <VegaVisual spec={compareSpec} data={comparison} theme={theme} header={{ title: 'Usual vs. marked-up vs. now' }} />
+                <VegaVisual spec={compareSpec} data={comparison} theme={theme} header={{ title: 'Price comparison' }} />
               </div>
             </div>
           </section>
           <section aria-labelledby="reviews">
-            <h3 id="reviews" className="mb-300 flex items-center gap-200 text-600 font-bold"><MessageCircle className="icon-size-400 text-primary" /> Fictional customer reviews</h3>
+            <h3 id="reviews" className="mb-300 flex items-center gap-200 text-600 font-bold"><MessageCircle className="icon-size-400 text-primary" /> Customer reviews</h3>
             <ul className="grid gap-300 sm:grid-cols-2">
               {deal.reviews.map(([name, text]) => <Review key={name} name={name} text={text} />)}
               {deal.skeptical && <Review name={deal.skeptic[0]} text={deal.skeptic[1]} skeptical />}
@@ -110,7 +107,7 @@ function Review({ name, text, skeptical = false }: { name: string; text: string;
     <li className={`rounded-2xl border px-400 py-300 ${skeptical ? 'bg-secondary sm:col-span-2' : 'bg-card'}`}>
       <p className="flex items-center gap-200 text-300 font-bold">
         <span aria-label={skeptical ? '1 out of 5 stars' : '5 out of 5 stars'} role="img" className={skeptical ? 'text-deal' : 'text-primary'}>{skeptical ? '★☆☆☆☆' : '★★★★★'}</span>
-        {name}{skeptical && <span className="rounded-full bg-card px-200 py-100 text-200 text-deal">Spotted the scam</span>}
+        {name}
       </p>
       <blockquote className="mt-100 text-300 text-muted-foreground">“{text}”</blockquote>
     </li>

@@ -1,6 +1,6 @@
 # OddCart
 
-OddCart is a family-friendly Cyber Monday parody. Browse six illustrated gadgets, play their demos, or filter by store and advertised discount. **Inspect deal** compares the current offer with the usual price and the pre-sale markup, and shows fictional customer reviews.
+OddCart is a family-friendly Cyber Monday concept catalogue. Browse sixteen illustrated gadgets, watch their three-scene product films, or filter by store and advertised discount. **Inspect deal** opens the price charts and customer reviews.
 
 The catalog is bundled with the app. Supplier changes, purchases, and delayed one-star reviews are simulated in each session and reset on reload. There is no checkout or real sales data. The storefront keeps the template’s Fabric sign-in gate.
 

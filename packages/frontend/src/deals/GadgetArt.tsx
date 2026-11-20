@@ -1,10 +1,15 @@
-import { useState } from 'react';
-import { Play, RotateCcw } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Film, Pause, Play, RotateCcw, X } from 'lucide-react';
 import type { GadgetId, LiveDeal } from './catalog';
+import { NewGadgetDrawing } from './NewGadgetDrawing';
+import { films } from './product-films';
 
 const backgrounds: Record<GadgetId, string> = {
   toaster: 'bg-lavender', plant: 'bg-mint', socks: 'bg-peach',
   duck: 'bg-lemon', pillow: 'bg-sky', spoon: 'bg-pink',
+  fridge: 'bg-sky', umbrella: 'bg-pink', remote: 'bg-lavender',
+  pencil: 'bg-mint', clock: 'bg-peach', pizza: 'bg-lemon',
+  doorbell: 'bg-lavender', tape: 'bg-pink', mug: 'bg-sky', slipper: 'bg-mint',
 };
 
 function Spark({ x, y, size = 8 }: { x: number; y: number; size?: number }) {
@@ -89,24 +94,70 @@ function Drawing({ id }: { id: GadgetId }) {
         <path d="M122 114h14m-7-7v14" strokeLinecap="round" />
       </g>
     </>;
+    default: return <NewGadgetDrawing id={id} />;
   }
 }
 
+const sceneDuration = 3400;
+
 export function GadgetArt({ deal }: { deal: LiveDeal }) {
-  const [play, setPlay] = useState(0);
+  const [scene, setScene] = useState<number | null>(null);
+  const [playing, setPlaying] = useState(false);
+  const [finished, setFinished] = useState(false);
+  const scenes = films[deal.id];
+  const current = scene === null ? null : scenes[scene];
+  const SceneProp = current?.[1];
+
+  useEffect(() => {
+    if (!playing || scene === null) return;
+    const timer = window.setTimeout(() => {
+      if (scene + 1 < scenes.length) {
+        setScene(scene + 1);
+      } else {
+        setFinished(true);
+        setPlaying(false);
+      }
+    }, sceneDuration);
+    return () => window.clearTimeout(timer);
+  }, [playing, scene, scenes.length]);
+
+  const start = () => { setScene(0); setFinished(false); setPlaying(true); };
+  const close = () => { setPlaying(false); setFinished(false); setScene(null); };
+  const chip = 'inline-flex cursor-pointer items-center justify-center gap-200 rounded-full bg-art-paper px-300 py-200 text-200 font-bold text-art-ink shadow-sm hover:bg-accent';
+
   return (
-    <figure className={`relative isolate flex aspect-[2/1] items-center justify-center overflow-hidden ${backgrounds[deal.id]} text-art-ink`}>
-      <div className="art-pattern absolute inset-0 -z-10 opacity-65" />
-      <svg key={play} className={`h-full w-full ${play ? 'art-playing' : ''}`} viewBox="0 0 300 170" role="img" aria-label={`Illustration of the ${deal.name}`}>
-        <ellipse cx="150" cy="147" rx="76" ry="9" fill="var(--color-art-ink)" opacity=".10" />
-        <g fill="var(--color-art-ink)" opacity=".55"><Spark x={61} y={80} /><Spark x={243} y={114} size={7} /><Spark x={230} y={40} size={5} /></g>
-        <Drawing id={deal.id} />
-      </svg>
-      <span className="absolute top-300 left-300 rounded-full bg-accent px-300 py-100 font-monospace text-200 font-bold text-accent-foreground">−{deal.discount}%</span>
-      <button type="button" onClick={() => setPlay((count) => count + 1)} aria-label={`${play ? 'Replay' : 'Play'} ${deal.name} demo`} className="absolute right-300 bottom-300 inline-flex cursor-pointer items-center gap-200 rounded-full bg-art-paper px-300 py-200 text-200 font-bold shadow-sm hover:bg-accent">
-        {play ? <RotateCcw className="icon-size-100" /> : <Play className="icon-size-100 fill-current" />} Demo
-      </button>
-      <figcaption className="sr-only" aria-live="polite">{play ? deal.demo : ''}</figcaption>
+    <figure className="text-art-ink">
+      <div className={`relative isolate flex aspect-[2/1] items-center justify-center overflow-hidden ${backgrounds[deal.id]}`}>
+        <div className="art-pattern absolute inset-0 -z-10 opacity-65" />
+        <svg key={scene} data-scene={scene} data-playing={playing} className="product-shot h-full w-full" viewBox="0 0 300 170" role="img" aria-label={`Illustration of the ${deal.name}`}>
+          <g className="product-camera">
+            <ellipse cx="150" cy="147" rx="76" ry="9" fill="var(--color-art-ink)" opacity=".10" />
+            <g fill="var(--color-art-ink)" opacity=".55"><Spark x={61} y={80} /><Spark x={243} y={114} size={7} /><Spark x={230} y={40} size={5} /></g>
+            <Drawing id={deal.id} />
+          </g>
+          {current && SceneProp && <g className="product-cutaway" aria-hidden="true">
+            <rect x="194" y="46" width="91" height="73" rx="12" fill="var(--color-art-paper)" stroke="var(--color-art-ink)" strokeWidth="2" />
+            <path d="M194 64h91" fill="none" stroke="var(--color-art-ink)" strokeWidth="1.5" />
+            <circle cx="203" cy="55" r="2" fill="var(--color-art-rose)" /><circle cx="211" cy="55" r="2" fill="var(--color-art-violet)" />
+            <SceneProp x="228" y="70" size={23} stroke="var(--color-art-ink)" />
+            <text x="239.5" y="106" textAnchor="middle" fill="var(--color-art-ink)" fontWeight="700" fontSize="7.5">{current[2]}</text>
+          </g>}
+        </svg>
+        <span className="absolute top-300 left-300 rounded-full bg-accent px-300 py-100 font-monospace text-200 font-bold text-accent-foreground">
+          {scene === null ? `−${deal.discount}%` : `${String(scene + 1).padStart(2, '0')} / 03`}
+        </span>
+        {scene !== null && <button type="button" onClick={close} aria-label={`Close ${deal.name} film`} className={`absolute top-300 right-300 ${chip}`}><X className="icon-size-200" /></button>}
+        <button type="button" onClick={scene === null || finished ? start : () => setPlaying(!playing)} aria-label={`${scene === null ? 'Watch' : finished ? 'Replay' : playing ? 'Pause' : 'Resume'} ${deal.name} film`} className={`absolute right-300 bottom-300 ${chip}`}>
+          {scene === null ? <Film className="icon-size-200" /> : finished ? <RotateCcw className="icon-size-200" /> : playing ? <Pause className="icon-size-200" /> : <Play className="icon-size-200" />}
+          {scene === null ? 'Watch film' : finished ? 'Replay' : playing ? 'Pause' : 'Resume'}
+        </button>
+      </div>
+      {current && <figcaption className="bg-art-ink px-400 py-300 text-art-paper">
+        <div className="mb-200 grid grid-cols-3 gap-100" aria-hidden="true">
+          {scenes.map(([caption], index) => <span key={caption} className={`h-100 rounded-full ${scene !== null && index <= scene ? 'bg-accent' : 'bg-art-paper/30'}`} />)}
+        </div>
+        <p className="text-300 leading-300" aria-live="polite">{current[0]}</p>
+      </figcaption>}
     </figure>
   );
 }
